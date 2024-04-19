@@ -14,6 +14,7 @@ class CtvLead(models.Model):
 
     check_country = fields.Boolean('check country', compute='_check_country', store=False)
 
+
     @api.depends('country_id', 'brand_id')
     def _check_country(self):
         for record in self:
