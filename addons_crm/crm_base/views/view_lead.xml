@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+<!--        Tree view-->
+        <record id="crm_lead_view_tree_lead" model="ir.ui.view">
+            <field name="name">Tree lead</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="replace">
+                    <tree >
+                        <field name="name" optional="show" string="Mã Booking"/>
+                    </tree>
+                </xpath>
+            </field>
+        </record>
+<!--form view-->
+        <record id="crm_lead_form_lead" model="ir.ui.view">
+            <field name="name">Tiềm Năng</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_chatter']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+                <xpath expr="//form/sheet/div[@class='oe_title']" position="replace">
+                    <div class="oe_title">
+                        <label for="name" string="Lead"/>
+                        <h1>
+                            <field name="name" placeholder="Describe the lead..." readonly="True" force_save="True"/>
+                        </h1>
+                    </div>
+                    <div class="oe_title">
+                        <label for="status_classification" string="Phân loại:"/>
+                        <h2>
+                            <field name="status_classification" options="{'classes': {'success': 'success', 'follow': 'info', '3': 'warning', 'super_potential': 'danger'}}" class="oe_left" />
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="status_classification" placeholder="e.g. Product Pricing" required="True"/>
+                            <field name="name" string="Cơ hội" placeholder="e.g. Product Pricing" required="True"/>
+                            <field name="team_id" string="Dự án kinh doanh" required="True"/>
+                            <field name="type_gym" />
+                            <field name="career"/>
+                        </group>
+                        <group>
+                            <field name="exchange_content"/>
+                            <field name="date"/>
+                            <field name="evaluate"/>
+                            <field name="acreage"/>
+                            <field name="ground"/>
+                            <h2 class="d-flex gap-2 g-0 align-items-end pb-3" invisible="True">
+                                <div attrs="{'invisible': [('type', '=', 'lead')]}">
+                                    <label for="expected_revenue" class="oe_edit_only pb-1" />
+                                    <div class="d-flex align-items-end">
+                                        <field name="company_currency" invisible="1"/>
+                                        <field name="expected_revenue" class="oe_inline o_input_13ch" widget='monetary' options="{'currency_field': 'company_currency'}"/>
+                                        <span class="oe_grey p-2" groups="crm.group_use_recurring_revenues"> + </span>
+                                        <span class="oe_grey p-2" groups="!crm.group_use_recurring_revenues"> at </span>
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible': [('type', '=', 'lead')]}" groups="crm.group_use_recurring_revenues">
+                                    <field name="recurring_revenue" class="oe_inline o_input_10ch" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                                </div>
+                                <div attrs="{'invisible': [('type', '=', 'lead')]}" groups="crm.group_use_recurring_revenues">
+                                    <div class="d-flex align-items-end ps-2">
+                                        <field name="recurring_plan" class="oe_inline o_input_12ch" placeholder="E.g. Monthly"
+                                               attrs="{'required': [('recurring_revenue', '!=', 0)]}" options="{'no_create': True, 'no_open': True}"/>
+                                        <span class="oe_grey p-2"> at </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="oe_edit_only d-md-flex align-items-center">
+                                        <label for="probability"/>
+                                        <div class="d-flex align-items-center">
+                                            <button class="ps-0 ps-md-2 btn btn-link" name="action_set_automated_probability" type="object"
+                                                    attrs="{'invisible': [('is_automated_probability', '=', True)]}">
+                                                <i class="fa fa-gear" role="img" title="Switch to automatic probability" aria-label="Switch to automatic probability"></i>
+                                            </button>
+                                            <small class="oe_grey h6 mb0 d-flex" attrs="{'invisible': [('is_automated_probability', '=', True)]}">
+                                                <field class="mb0" name="automated_probability" force_save="1"/> %
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div id="probability" class="d-flex align-items-baseline">
+                                        <field name="is_automated_probability" invisible="1"/>
+                                        <field name="probability" widget="float" class="oe_inline o_input_6ch"/>
+                                        <span class="oe_grey"> %</span>
+                                    </div>
+                                </div>
+                            </h2>
+                        </group>
+                    </group>
+                </xpath>
+
+                 <xpath expr="//form/sheet/group/group[@name='opportunity_partner']" position="replace">
+                        <group name="opportunity_partner" attrs="{'invisible': [('type', '=', 'lead')]}">
+                                <field name="partner_id"
+                                    widget="res_partner_many2one"
+                                    string="Khách hàng"
+                                    context="{'res_partner_search_mode': type == 'opportunity' and 'customer' or False,
+                                        'default_name': contact_name or partner_name,
+                                        'default_street': street,
+                                        'default_is_company': type == 'opportunity' and contact_name == False,
+                                        'default_company_name': type == 'opportunity' and partner_name,
+                                        'default_street2': street2,
+                                        'default_city': city,
+                                        'default_title': title,
+                                        'default_state_id': state_id,
+                                        'default_zip': zip,
+                                        'default_country_id': country_id,
+                                        'default_function': function,
+                                        'default_phone': phone,
+                                        'default_mobile': mobile,
+                                        'default_email': email_from,
+                                        'default_user_id': user_id,
+                                        'default_team_id': team_id,
+                                        'default_website': website,
+                                        'default_lang': lang_code,
+                                        'show_vat': True,
+                                    }"
+                                />
+                                <field name="customer_classify"/>
+                                <field name="is_blacklisted" invisible="1"/>
+                                <field name="partner_is_blacklisted" invisible="1"/>
+                                <field name="phone_blacklisted" invisible="1"/>
+                                <field name="mobile_blacklisted" invisible="1"/>
+                                <field name="email_state" invisible="1"/>
+                                <field name="phone_state" invisible="1"/>
+                                <field name="partner_email_update" invisible="1"/>
+                                <field name="partner_phone_update" invisible="1"/>
+                                <label for="email_from" class="oe_inline"/>
+                                <div class="o_row o_row_readonly">
+                                    <button name="mail_action_blacklist_remove" class="fa fa-ban text-danger"
+                                        title="This email is blacklisted for mass mailings. Click to unblacklist."
+                                        type="object" context="{'default_email': email_from}" groups="base.group_user"
+                                        attrs="{'invisible': [('is_blacklisted', '=', False)]}"/>
+                                    <field name="email_from" string="Email" widget="email"/>
+                                    <span class="fa fa-exclamation-triangle text-warning oe_edit_only"
+                                        title="By saving this change, the customer email will also be updated."
+                                        attrs="{'invisible': [('partner_email_update', '=', False)]}"/>
+                                </div>
+                                <label for="phone" class="oe_inline"/>
+                                <div class="o_row o_row_readonly">
+                                    <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger"
+                                        title="This phone number is blacklisted for SMS Marketing. Click to unblacklist."
+                                        type="object" context="{'default_phone': phone}" groups="base.group_user"
+                                        attrs="{'invisible': [('phone_blacklisted', '=', False)]}"/>
+                                    <field name="phone" widget="phone"/>
+                                    <span class="fa fa-exclamation-triangle text-warning oe_edit_only"
+                                        title="By saving this change, the customer phone number will also be updated."
+                                        attrs="{'invisible': [('partner_phone_update', '=', False)]}"/>
+                                </div>
+                                <field name="lost_reason_id" attrs="{'invisible': [('active', '=', True)]}"/>
+                                <field name="date_conversion" invisible="1"/>
+                                <field name="user_company_ids" invisible="1"/>
+                                <label for="street_page_lead" string="Địa chỉ"/>
+                                    <div class="o_address_format">
+                                        <field name="street" id="street_page_lead" placeholder="Đường..." class="o_address_street"/>
+                                        <field name="city" placeholder="Thành phố" class="o_address_city"/>
+                                        <field name="country_id" placeholder="Quốc gia" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                    </div>
+                            </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="crm.crm_lead_action_pipeline">
+            <field name="name">Potential</field>
+            <field name="res_model">crm.lead</field>
+            <field name="view_mode">tree,form,kanban,graph,pivot,calendar,activity</field>
+            <field name="domain">[('type','=','opportunity')]</field>
+            <field name="context">{
+                    'default_type': 'opportunity',
+                    'search_default_assigned_to_me': 1
+            }</field>
+            <field name="search_view_id" ref="crm.view_crm_case_opportunities_filter"/>
+        </record>
+<!--        <record id="crm_lead_view_form_booking" model="ir.actions.act_window.view">-->
+<!--            <field name="sequence" eval="4"/>-->
+<!--            <field name="view_mode">form</field>-->
+<!--            <field name="view_id" ref="crm_lead_form_booking"/>-->
+<!--            <field name="act_window_id" ref="crm.crm_lead_action_pipeline"/>-->
+<!--        </record>-->
+    </data>
+</odoo>
