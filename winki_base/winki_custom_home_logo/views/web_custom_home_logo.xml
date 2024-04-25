@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="web_custom_home_menu" name="Custom Home Menu">
+        <xpath expr="//button[@class='dropdown-toggle' and @title='Home Menu']" position="replace">
+            <a id="customLogo" href="#">
+                <img src="/winki_custom_home_logo/static/src/img/logo.png" alt="Custom Logo" style="height: 40px; width: auto;"/>
+            </a>
+        </xpath>
+    </template>
+</odoo>
